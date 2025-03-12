@@ -1,0 +1,25 @@
+﻿@model Review
+
+<h2>Подробности отзыва</h2>
+
+<div>
+    <h3>Что понравилось:</h3>
+    @Model.Liked
+</div>
+
+<div>
+    <h3>Что не понравилось:</h3>
+    @Model.Disliked
+</div>
+
+<div>
+    <h3>Комментарии:</h3>
+    @Model.Comments
+</div>
+
+<div>
+    <strong>Оценка:</strong> @Model.Rating
+</div>
+
+<a href="@Url.Action("Index", "Reviews")">Назад к списку отзывов</a>
+

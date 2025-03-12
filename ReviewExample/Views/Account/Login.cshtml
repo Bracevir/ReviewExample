@@ -1,0 +1,27 @@
+﻿@model LoginViewModel
+
+<h2>Вход</h2>
+
+<form asp-action="Login" method="post">
+    <div>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Password"></label>
+        <input asp-for="Password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div>
+        <input asp-for="RememberMe" /> Запомнить меня
+    </div>
+    <button type="submit">Войти</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

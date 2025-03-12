@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Review>
+
+<h2>Администрирование отзывов</h2>
+
+<table>
+    <!-- Аналогично Index.cshtml -->
+    <!-- Добавьте кнопку удаления с подтверждением -->
+    @foreach (var review in Model)
+    {
+        <tr>
+            <!-- Данные отзыва -->
+            <td><button onclick="confirmDelete(@review.Id)">Удалить</button></td>
+        </tr>
+    }
+</table>
+
+<script type="text/javascript">
+    function confirmDelete(id) {
+        if (confirm('Вы уверены, что хотите удалить этот отзыв?')) {
+            // AJAX запрос на удаление отзыва
+        }
+    }
+</script>
+
+<a href="@Url.Action("Index", "Reviews")">Назад к списку отзывов</a>
+
