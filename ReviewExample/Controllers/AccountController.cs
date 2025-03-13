@@ -28,7 +28,7 @@ namespace ReviewExample.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+                var user = new IdentityUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)

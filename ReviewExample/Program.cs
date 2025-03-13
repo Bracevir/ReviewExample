@@ -14,6 +14,17 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Настройки для паролей
+    options.Password.RequireDigit = true; // Требовать хотя бы одну цифру
+    options.Password.RequireLowercase = true; // Требовать хотя бы одну строчную букву
+    options.Password.RequireUppercase = true; // Требовать хотя бы одну заглавную букву
+    options.Password.RequireNonAlphanumeric = true; // Требовать хотя бы один специальный символ
+    options.Password.RequiredLength = 6; // Минимальная длина пароля
+    options.Password.RequiredUniqueChars = 1; // Минимальное количество уникальных символов
+});
+
 // Контроллеры и представления
 builder.Services.AddControllersWithViews();
 
@@ -32,6 +43,8 @@ using (var scope = app.Services.CreateScope())
 {
     try
     {
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        context.Database.Migrate();
         var services = scope.ServiceProvider;
         await SeedData.Initialize(services);
     }
