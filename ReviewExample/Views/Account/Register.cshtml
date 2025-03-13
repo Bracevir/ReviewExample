@@ -3,23 +3,27 @@
 <h2>Регистрация</h2>
 
 <form asp-action="Register" method="post">
-    <div>
+    <div class="form-group">
         <label asp-for="Email"></label>
-        <input asp-for="Email" />
+        <input asp-for="Email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
-    <div>
+
+    <div class="form-group">
         <label asp-for="Password"></label>
-        <input asp-for="Password" />
+        <input asp-for="Password" class="form-control" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
-    <div>
+
+    <div class="form-group">
         <label asp-for="ConfirmPassword"></label>
-        <input asp-for="ConfirmPassword" />
+        <input asp-for="ConfirmPassword" class="form-control" />
         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
     </div>
-    <button type="submit">Зарегистрироваться</button>
+
+    <button asp-controller="Account" asp-action="Register" type="submit" class="btn btn-primary">Зарегистрироваться</button>
 </form>
+
 
 @section Scripts {
     @{
