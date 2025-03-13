@@ -16,17 +16,14 @@ namespace ReviewExample.Controllers
         }
 
         [HttpGet]
-        //public async Task<IActionResult> Index(int page = 1)
-        //{
-        //    var reviews = await _repository.GetPaginatedReviewsAsync(page, PageSize);
-        //    return View(reviews);
-        //}
-
         public async Task<IActionResult> Index(int page = 1)
         {
             const int PageSize = 5; // Количество отзывов на страницу
             var reviews = await _repository.GetAllReviewsAsync();
-            var pagedReviews = reviews.Skip((page - 1) * PageSize).Take(PageSize).ToList();
+            var pagedReviews = reviews.OrderByDescending(r => r.CreatedAt)
+                                      .Skip((page - 1) * PageSize)
+                                      .Take(PageSize)
+                                      .ToList();
 
             ViewBag.TotalPages = (int)Math.Ceiling((double)reviews.Count() / PageSize);
             ViewBag.CurrentPage = page;
@@ -45,7 +42,7 @@ namespace ReviewExample.Controllers
         public async Task<IActionResult> Create(Review model)
         {
             if (!ModelState.IsValid) return View(model);
-
+            model.CreatedAt = DateTime.UtcNow; // Сохраняем время в UTC
             await _repository.AddReviewAsync(model);
             return RedirectToAction("Create");
         }
@@ -58,6 +55,7 @@ namespace ReviewExample.Controllers
             {
                 return NotFound();
             }
+            review.CreatedAt = TimeZoneInfo.ConvertTimeFromUtc(review.CreatedAt, TimeZoneInfo.Local);
             return View(review);
         }
 
@@ -68,7 +66,10 @@ namespace ReviewExample.Controllers
             {
                 const int PageSize = 5;
                 var reviews = await _repository.GetAllReviewsAsync();
-                var pagedReviews = reviews.Skip((page - 1) * PageSize).Take(PageSize).ToList();
+                var pagedReviews = reviews.OrderByDescending(r => r.CreatedAt)
+                                          .Skip((page - 1) * PageSize)
+                                          .Take(PageSize)
+                                          .ToList();
 
                 if (!pagedReviews.Any())
                 {
@@ -82,7 +83,7 @@ namespace ReviewExample.Controllers
                 Console.WriteLine($"Ошибка: {ex.Message}");
                 return StatusCode(500); // Возвращаем статус ошибки сервера
             }
-
         }
     }
+
 }
