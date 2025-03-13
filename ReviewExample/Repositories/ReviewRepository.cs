@@ -7,6 +7,9 @@ namespace ReviewExample.Repositories
     {
         Task AddReviewAsync(Review review);
         Task<IEnumerable<Review>> GetPaginatedReviewsAsync(int page, int pageSize);
+        Task<IEnumerable<Review>> GetAllReviewsAsync();
+        Task<Review> GetReviewByIdAsync(int id);
+        Task DeleteReviewAsync(int id);
     }
 
     public class ReviewRepository : IReviewRepository
@@ -25,6 +28,21 @@ namespace ReviewExample.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteReviewAsync(int id)
+        {
+            var review = await _context.Reviews.FindAsync(id);
+            if (review != null)
+            {
+                _context.Reviews.Remove(review);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<IEnumerable<Review>> GetAllReviewsAsync()
+        {
+            return await _context.Reviews.ToListAsync();
+        }
+
         public async Task<IEnumerable<Review>> GetPaginatedReviewsAsync(int page, int pageSize)
         {
             return await _context.Reviews
@@ -32,6 +50,11 @@ namespace ReviewExample.Repositories
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<Review> GetReviewByIdAsync(int id)
+        {
+            return await _context.Reviews.FindAsync(id);
         }
     }
 

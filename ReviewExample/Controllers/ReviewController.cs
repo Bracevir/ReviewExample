@@ -16,10 +16,22 @@ namespace ReviewExample.Controllers
         }
 
         [HttpGet]
+        //public async Task<IActionResult> Index(int page = 1)
+        //{
+        //    var reviews = await _repository.GetPaginatedReviewsAsync(page, PageSize);
+        //    return View(reviews);
+        //}
+
         public async Task<IActionResult> Index(int page = 1)
         {
-            var reviews = await _repository.GetPaginatedReviewsAsync(page, PageSize);
-            return View(reviews);
+            const int PageSize = 5; // Количество отзывов на страницу
+            var reviews = await _repository.GetAllReviewsAsync();
+            var pagedReviews = reviews.Skip((page - 1) * PageSize).Take(PageSize).ToList();
+
+            ViewBag.TotalPages = (int)Math.Ceiling((double)reviews.Count() / PageSize);
+            ViewBag.CurrentPage = page;
+
+            return View(pagedReviews);
         }
 
         [HttpGet]
@@ -36,6 +48,41 @@ namespace ReviewExample.Controllers
 
             await _repository.AddReviewAsync(model);
             return RedirectToAction("Create");
+        }
+
+        // GET: /Reviews/Details/5
+        public async Task<IActionResult> Details(int id)
+        {
+            var review = await _repository.GetReviewByIdAsync(id);
+            if (review == null)
+            {
+                return NotFound();
+            }
+            return View(review);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadMoreReviews(int page)
+        {
+            try
+            {
+                const int PageSize = 5;
+                var reviews = await _repository.GetAllReviewsAsync();
+                var pagedReviews = reviews.Skip((page - 1) * PageSize).Take(PageSize).ToList();
+
+                if (!pagedReviews.Any())
+                {
+                    return Content(""); // Возвращаем пустой контент, если больше нет отзывов
+                }
+
+                return PartialView("_ReviewList", pagedReviews);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+                return StatusCode(500); // Возвращаем статус ошибки сервера
+            }
+
         }
     }
 }

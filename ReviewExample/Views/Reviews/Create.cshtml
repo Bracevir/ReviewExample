@@ -3,43 +3,44 @@
 <h2>Оставить отзыв</h2>
 
 <form asp-action="Create" method="post">
-    <div>
-        <label asp-for="UserName"></label>
-        <input asp-for="UserName" />
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label asp-for="UserName">Имя пользователя</label>
+        <input asp-for="UserName" class="form-control" />
         <span asp-validation-for="UserName" class="text-danger"></span>
     </div>
 
-    <div>
-        <label asp-for="OrganizationName"></label>
-        <input asp-for="OrganizationName" />
+    <div class="form-group">
+        <label asp-for="OrganizationName">Организация</label>
+        <input asp-for="OrganizationName" class="form-control" />
         <span asp-validation-for="OrganizationName" class="text-danger"></span>
     </div>
 
-    <div>
-        <label asp-for="Address"></label>
-        <input asp-for="Address" />
+    <div class="form-group">
+        <label asp-for="Address">Адрес</label>
+        <input asp-for="Address" class="form-control" />
     </div>
 
-    <div>
-        <label asp-for="Liked"></label>
-        <textarea asp-for="Liked" maxlength="1000"></textarea>
+    <div class="form-group">
+        <label asp-for="Liked">Понравилось</label>
+        <textarea asp-for="Liked" maxlength="1000" class="form-control"></textarea>
         <span asp-validation-for="Liked" class="text-danger"></span>
     </div>
 
-    <div>
-        <label asp-for="Disliked"></label>
-        <textarea asp-for="Disliked" maxlength="1000"></textarea>
+    <div class="form-group">
+        <label asp-for="Disliked">Не понравилось</label>
+        <textarea asp-for="Disliked" maxlength="1000" class="form-control"></textarea>
         <span asp-validation-for="Disliked" class="text-danger"></span>
     </div>
 
-    <div>
-        <label asp-for="Comments"></label>
-        <textarea asp-for="Comments" maxlength="1000"></textarea>
+    <div class="form-group">
+        <label asp-for="Comments">Комментарий</label>
+        <textarea asp-for="Comments" maxlength="1000" class="form-control"></textarea>
     </div>
 
-    <div>
-        <label asp-for="Rating"></label>
-        <select asp-for="Rating">
+    <div class="form-group">
+        <label asp-for="Rating">Оценка</label>
+        <select asp-for="Rating" class="form-control">
             @for (int i = 1; i <= 5; i++)
             {
                 <option value="@i">@i</option>
@@ -48,7 +49,7 @@
         <span asp-validation-for="Rating" class="text-danger"></span>
     </div>
 
-    <button type="submit">Отправить отзыв</button>
+    <button type="submit" class="btn btn-primary">Отправить отзыв</button>
 </form>
 
 @section Scripts {

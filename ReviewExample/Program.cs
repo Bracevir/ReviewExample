@@ -25,6 +25,13 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 1; // Минимальное количество уникальных символов
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("Admin"));
+});
+
+
 // Контроллеры и представления
 builder.Services.AddControllersWithViews();
 
@@ -63,6 +70,10 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}"); // Главная страница - вход
+app.MapControllerRoute(
+    name: "admin",
+    pattern: "adminka",
+    defaults: new { controller = "Admin", action = "Index" });
 
 app.Run();
 

@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<Review>
-
+<meta http-equiv="Content-Security-Policy" content="script-src 'self'; style-src 'self';">
 <link href='@Url.Content("~/Content/bootstrap.min.css")' rel="stylesheet" type="text/css" />
 <script src='@Url.Content("~/Scripts/bootstrap.min.js")'></script>
 
@@ -9,37 +9,78 @@
 </div>
 <h2>Список отзывов</h2>
 
-<table>
+<table class="table table-striped">
     <thead>
         <tr>
+            <th>Пользователь</th>
             <th>Название компании</th>
             <th>Адрес</th>
             <th>Оценка</th>
+            <th>Дата создания</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="reviewsBody">
         @foreach (var review in Model)
         {
             <tr onclick="location.href='@Url.Action("Details", new { id = review.Id })'">
+                <td>@review.UserName</td>
                 <td>@review.OrganizationName</td>
                 <td>@review.Address</td>
                 <td>@review.Rating</td>
+                <td>@review.CreatedAt</td>
             </tr>
         }
     </tbody>
 </table>
 
-<button id="loadMore">Загрузить еще отзывы</button>
+@if (ViewBag.CurrentPage < ViewBag.TotalPages)
+{
+    <button id="loadMore" class="btn btn-primary">Загрузить ещё отзывы</button>
+}
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript">
+
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Подключите jQuery -->
+<script>
     $(document).ready(function () {
-        let page = 2;
+        let currentPage = parseInt('@ViewBag.CurrentPage', 10);
+        const totalPages = parseInt('@ViewBag.TotalPages', 10);
+
         $('#loadMore').click(function () {
-            $.get('@Url.Action("Index")', { page: page }, function (data) {
-                $('tbody').append(data);
-                page++;
-            });
+            if (currentPage < totalPages) {
+                $(this).prop('disabled', true); // Отключаем кнопку временно
+
+                $.ajax({
+                    url: '@Url.Action("LoadMoreReviews", "Reviews")',
+                    type: 'GET',
+                    data: { page: currentPage + 1 },
+                    success: function (data) {
+                        if (data.trim() === "") {
+                            $('#loadMore').hide(); // Скрыть кнопку, если больше нет отзывов
+                        } else {
+                            $('#reviewsBody').append(data); // Добавляем данные в reviewsBody
+                            currentPage++;
+                            $('#loadMore').prop('disabled', false); // Включаем кнопку обратно
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert(`Ошибка: ${xhr.status} - ${error}`);
+                        $('#loadMore').prop('disabled', false); // Включаем кнопку обратно при ошибке
+                    }
+                });
+            } else {
+                $('#loadMore').hide(); // Скрыть кнопку, если больше нет страниц
+            }
         });
     });
 </script>
+}
+
+
+
+@if (User.IsInRole("Admin")) // Проверяем, является ли пользователь администратором
+{
+    <div class="mt-3">
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-primary">Перейти в админ-панель</a>
+    </div>
+}

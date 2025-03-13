@@ -1,0 +1,12 @@
+﻿@model IEnumerable<Review>
+
+@foreach (var review in Model)
+{
+    <tr onclick="location.href='@Url.Action("Details", new { id = review.Id })'">
+        <td>@review.UserName</td>
+        <td>@review.OrganizationName</td>
+        <td>@review.Address</td>
+        <td>@review.Rating</td>
+        <td>@review.CreatedAt</td>
+    </tr>
+}
